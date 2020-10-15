@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const MongoClient = require('mongodb').MongoClient;
+const ObjectId = require('mongodb').ObjectId;
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.94gfj.mongodb.net/${process.env.DB_SERVICE}?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -18,6 +19,20 @@ client.connect(err => {
     const feedbacks = client.db("feedbackdb").collection("feedbackCollection");
     const admins = client.db("admindb").collection("adminCollection");
     const orders = client.db("orderdb").collection("orderCollection");
+
+    app.patch('/update/:id', (req, res) => {
+        console.log(req.params.id);
+        const status = req.body.status;
+        console.log(req.body.status)
+        orders.updateOne({_id: ObjectId(req.params.id)}, 
+        {
+            $set: {status : status},
+        })
+        .then(result => {
+           res.send(result);
+        })
+        
+    })
 
     app.get('/individualorder', (req, res) => {
         const email = req.query.email;
