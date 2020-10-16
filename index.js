@@ -21,9 +21,7 @@ client.connect(err => {
     const orders = client.db("orderdb").collection("orderCollection");
 
     app.patch('/update/:id', (req, res) => {
-        console.log(req.params.id);
         const status = req.body.status;
-        console.log(req.body.status)
         orders.updateOne({_id: ObjectId(req.params.id)}, 
         {
             $set: {status : status},
